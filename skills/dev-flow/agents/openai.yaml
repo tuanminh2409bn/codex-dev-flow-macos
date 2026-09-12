@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dev Flow"
+  short_description: "Build Flutter, Next.js, and Python efficiently"
+  default_prompt: "Use $dev-flow to complete this software task efficiently with minimal context."
