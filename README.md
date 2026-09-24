@@ -3,7 +3,7 @@
 Personal, portable Codex setup for Flutter, Next.js, and Python development. The repository restores:
 
 - global working agreements at `~/.codex/AGENTS.md`;
-- the `dev-flow` skill at `~/.codex/skills/dev-flow`;
+- the `dev-flow` skill at `~/.agents/skills/dev-flow` (available across all your Codex projects);
 - stack-specific guidance for Flutter, Next.js, and Python.
 
 Authentication, sessions, logs, plugin caches, API keys, and project source code are intentionally excluded.
