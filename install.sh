@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 codex_dir="${CODEX_HOME:-$HOME/.codex}"
-skill_dir="$codex_dir/skills/dev-flow"
+skill_dir="$HOME/.agents/skills/dev-flow"
 timestamp="$(date +%Y%m%d-%H%M%S)"
 backup_dir="$codex_dir/backups/codex-dev-flow-$timestamp"
 
@@ -17,7 +17,7 @@ if [[ ! -f "$repo_dir/skills/dev-flow/SKILL.md" ]]; then
   exit 1
 fi
 
-mkdir -p "$codex_dir" "$codex_dir/skills"
+mkdir -p "$codex_dir" "$(dirname "$skill_dir")"
 
 if [[ -f "$codex_dir/AGENTS.md" || -d "$skill_dir" ]]; then
   mkdir -p "$backup_dir"
