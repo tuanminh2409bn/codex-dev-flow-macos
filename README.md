@@ -1,10 +1,10 @@
 # Codex Dev Flow for macOS
 
-Personal, portable Codex setup for Flutter, Next.js, and Python development. The repository restores:
+Personal Codex setup for software development across languages and platforms, with a macOS installer. The repository restores:
 
 - global working agreements at `~/.codex/AGENTS.md`;
 - the `dev-flow` skill at `~/.agents/skills/dev-flow` (available across all your Codex projects);
-- stack-specific guidance for Flutter, Next.js, and Python.
+- focused references for Flutter, Next.js, and Python, plus manifest-driven guidance for other stacks and target platforms.
 
 Authentication, sessions, logs, plugin caches, API keys, and project source code are intentionally excluded.
 
@@ -64,14 +64,14 @@ chmod +x install.sh
 ./install.sh
 ```
 
-The installer backs up an existing global `AGENTS.md` or `dev-flow` skill under `~/.codex/backups/` before replacing it.
+The installer backs up existing guidance and the skill under `~/.codex/backups/`. It installs global `AGENTS.md` on a fresh setup. If an existing file differs, it preserves it and writes a uniquely named `AGENTS.md.proposed-*` for review and merging. The skill is replaced after staging; its previous contents remain in the backup.
 
 ### 5. Install Addy Osmani's Agent Skills plugin
 
 `dev-flow` can work by itself, but this plugin provides the specialist skills it routes to for testing, debugging, security, UI, and other higher-risk work.
 
 ```bash
-codex plugin marketplace add addyosmani/agent-skills --ref 0.6.9
+codex plugin marketplace add addyosmani/agent-skills --ref 0.6.12
 codex plugin add agent-skills@agent-skills
 ```
 
@@ -98,8 +98,24 @@ git pull --ff-only
 ./install.sh
 ```
 
-Restart Codex after an update.
+If Agent Skills is still pinned to `0.6.9`, update that marketplace separately (the installer does not manage plugins):
+
+```bash
+codex plugin marketplace remove agent-skills
+codex plugin marketplace add addyosmani/agent-skills --ref 0.6.12
+codex plugin add agent-skills@agent-skills
+```
+
+Review any `AGENTS.md.proposed-*` reported by the installer and merge the desired changes while preserving machine-specific rules. A proposal is not active guidance. Restart Codex and open a new chat after an update.
 
 ## Project-specific configuration
 
 Keep each project's own `AGENTS.md` inside that project's Git repository. It will be restored when the project is cloned and will be layered on top of this global configuration.
+
+## Workflow assessment
+
+See [the upstream comparison and validation plan](docs/dev-flow-assessment-2026-10-12.md) for the workflow upgrade, scope, and evidence. The installer remains macOS-oriented; language and target-platform coverage does not imply a Windows installer.
+
+## Installer verification
+
+Run `python3 -m unittest discover -s tests -v` and `bash -n install.sh`. Tests use explicit `--config-dir` and `--skill-dir` destinations inside temporary directories; they do not alter the live Codex configuration.

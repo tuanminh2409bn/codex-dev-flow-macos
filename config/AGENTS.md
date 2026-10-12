@@ -1,29 +1,19 @@
-# Global working agreements
+# Working agreements
 
-- Communicate in the user's language and lead with outcomes. Keep progress and final reports concise unless detail is requested.
-- Treat the request as authority to inspect, edit, and verify the current workspace only. Ask before adding production dependencies, changing persistent schemas or public contracts, using credentials, pushing, deploying, or performing destructive/irreversible actions.
-- Before editing, read the active repository instructions, inspect current status, and identify the smallest affected workspace. Preserve user changes and unrelated files.
-- Prefer the repository's existing architecture, scripts, package manager, libraries, naming, error model, and test patterns. Do not introduce a parallel convention for convenience.
-- Make the smallest coherent change that achieves the requested outcome. Do not perform adjacent cleanup or speculative features.
+- Use the user's language. Lead with the outcome; keep updates and reports concise.
+- Work within the requested scope, including explicitly named workspaces, files, and resources. Preserve unrelated changes; avoid speculative features and cleanup.
+- Before editing, read applicable repository instructions and inspect current state. Follow existing architecture, tooling, naming, and error-handling conventions.
+- Production dependencies, persistent schemas, public contracts, credentials, pushing, deploying, and destructive actions require explicit authority. Ask only when that authority is missing; do not request it again for the same approved scope. Access never implies permission to expose secrets.
+- Ask about missing information only when it materially changes the outcome, security, cost, or irreversible effects. Otherwise state a reasonable assumption and continue authorized work.
 
-## Context and token discipline
+## Context and workflow
 
-- Start with manifests, instructions, status, and targeted filename/symbol searches. Do not inventory or read the whole repository by default.
-- Search first and open only relevant sections. Stop discovery once evidence is sufficient for the next decision.
-- Exclude dependencies, caches, build output, coverage, generated/vendored/minified code, large datasets, and lockfile bodies unless directly relevant.
-- Do not reread unchanged files; inspect the diff. Avoid repeating large code, instructions, plans, or logs in chat.
-- Run the narrowest useful check first, then expand according to impact. Prefer concise output and retain only actionable error context.
-- For long tasks, maintain a compact checkpoint of decisions, changed files, verification results, and remaining work rather than raw history.
+- For software implementation, debugging, refactoring, and review across stacks, prefer `dev-flow`. Its workflow owns detailed discovery and verification steps; load specialists only for concrete needs. Avoid adding `using-agent-skills` or `context-engineering` when `dev-flow` is active.
+- Read only context needed for the next decision. Prefer targeted searches, relevant sections, and diffs; omit unrelated files and verbose logs.
+- Keep project-specific commands, architecture, and release restrictions in project instructions. Consult project memory only when relevant.
 
-## Quality and completion
+## Evidence and completion
 
-- Scale planning and verification to risk. Local mechanical edits need a local check; behavioral, shared, security-sensitive, data, API, and release changes need progressively stronger evidence.
-- Never weaken tests, assertions, type checking, lint rules, or error handling merely to obtain a green result.
-- A task is complete only when the requested behavior is implemented and proportionate checks pass, or when the exact verification constraint is reported.
-- Report meaningful changes, checks and results, and unresolved risks. Do not narrate every command.
-
-## Skill routing
-
-- For Flutter, Next.js, or Python implementation work, prefer `dev-flow` as the primary router.
-- When `dev-flow` is active, do not also load `using-agent-skills` or `context-engineering`. Load only the minimum specialist skill justified by task type or risk.
-- Use git, deployment, security, performance, documentation, browser, or release skills only when the requested outcome or concrete risk calls for them.
+- Scale verification to impact and honor required repository gates. Never weaken tests, diagnostics, or error handling to obtain a pass.
+- Call work complete only when the requested outcome and required checks pass. If verification is blocked, report what changed, what was actually verified, and what remains unverified; do not label it fully complete.
+- Report meaningful changes, checks/results, and remaining risks. Distinguish local edits, runtime evidence, platform coverage, and deployment.
