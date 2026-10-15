@@ -1,5 +1,6 @@
-"""Exercise installer behavior against isolated destinations, never the live home."""
+"""Exercise installer behavior and skill reference integrity against isolated destinations."""
 import pathlib
+import re
 import subprocess
 import tempfile
 import unittest
@@ -22,12 +23,13 @@ class InstallTests(unittest.TestCase):
             capture_output=True, text=True,
         )
 
-    def assert_skill_matches(self):
+    def assert_skill_matches(self, destination=None):
+        dest = destination or self.skill
         source = ROOT / "skills/dev-flow"
         expected = {p.relative_to(source): p.read_bytes()
                     for p in source.rglob("*") if p.is_file()}
-        actual = {p.relative_to(self.skill): p.read_bytes()
-                  for p in self.skill.rglob("*") if p.is_file()}
+        actual = {p.relative_to(dest): p.read_bytes()
+                  for p in dest.rglob("*") if p.is_file()}
         self.assertEqual(expected, actual)
 
     def test_fresh_install_and_repeated_install(self):
@@ -58,6 +60,31 @@ class InstallTests(unittest.TestCase):
         self.assertTrue(any((p / "dev-flow/old-reference.md").exists() for p in backups))
         self.assert_skill_matches()
 
+    def test_antigravity_target_install_and_proposal(self):
+        agy_config = self.root / "gemini config"
+        agy_skill = agy_config / "skills" / "dev-flow"
+        result = subprocess.run(
+            ["bash", str(ROOT / "install.sh"), "--antigravity",
+             "--config-dir", str(agy_config), "--skill-dir", str(agy_skill)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((agy_config / "GEMINI.md").read_bytes(),
+                         (ROOT / "config/AGENTS.md").read_bytes())
+        self.assert_skill_matches(agy_skill)
+
+        custom = b"# Custom Antigravity rules\n"
+        (agy_config / "GEMINI.md").write_bytes(custom)
+        result2 = subprocess.run(
+            ["bash", str(ROOT / "install.sh"), "--target", "antigravity",
+             "--config-dir", str(agy_config), "--skill-dir", str(agy_skill)],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(result2.returncode, 0, result2.stderr)
+        self.assertEqual((agy_config / "GEMINI.md").read_bytes(), custom)
+        proposals = list(agy_config.glob("GEMINI.md.proposed-*"))
+        self.assertEqual(len(proposals), 1)
+
     def test_symlink_skill_is_rejected_without_touching_target(self):
         target = self.root / "original"
         target.mkdir()
@@ -72,6 +99,20 @@ class InstallTests(unittest.TestCase):
     def test_missing_argument_fails_before_writing(self):
         self.assertNotEqual(self.run_install("--skill-dir").returncode, 0)
         self.assertFalse(self.config.exists())
+
+    def test_skill_references_and_links_are_complete(self):
+        skill_dir = ROOT / "skills/dev-flow"
+        skill_md = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        links = set(re.findall(r"\]\((references/[a-z0-9._-]+\.md)\)", skill_md))
+        ref_files = {
+            f"references/{p.name}"
+            for p in (skill_dir / "references").glob("*.md")
+        }
+        self.assertEqual(links, ref_files, "Every reference file must be linked from SKILL.md and exist on disk")
+        for rel in sorted(ref_files):
+            content = (skill_dir / rel).read_text(encoding="utf-8")
+            self.assertTrue(content.startswith("# "), f"{rel} must start with an H1 heading")
+            self.assertGreater(len(content.splitlines()), 15, f"{rel} should contain substantive guidance")
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ Deliver the requested outcome with the smallest sufficient context and coherent 
 
 ## Establish scope
 
-- Read applicable `AGENTS.md` instructions; inspect status and existing changes before editing. Without Git, inspect affected files and use available diffs or snapshots.
+- Read applicable `AGENTS.md` or `GEMINI.md` instructions; inspect status and existing changes before editing. Without Git, inspect affected files and use available diffs or snapshots.
 - Locate the affected package, its manifests, toolchain versions, scripts, and nearby tests. Preserve repository conventions and unrelated work.
 - Follow existing authorization. Dependencies, credentials, public contracts, persistent schemas, pushing, deploying, and destructive actions need explicit authority; do not ask again when already authorized.
 - Ask only when missing information changes behavior, security, architecture, cost, or an irreversible outcome. Otherwise state material assumptions and proceed.
@@ -20,14 +20,23 @@ Deliver the requested outcome with the smallest sufficient context and coherent 
 - **Standard:** behavior, bugs, or multiple files: state a short plan and observable acceptance condition; implement and verify a thin slice.
 - **High:** auth, payments, untrusted input, data, concurrency, public APIs, production configuration, or unfamiliar critical code: identify invariants, failure paths, affected consumers, and stronger verification before editing. Use existing specs and quality constraints; do not create ceremony for routine work.
 
-Derive commands from repository scripts and CI, not language guesses. Load only a relevant reference:
+Derive commands from repository scripts and CI, not language guesses. Load only the reference(s) matching the affected workspace:
 
 - Flutter/Dart (`pubspec.yaml`): [Flutter](references/flutter.md).
 - Next.js (declared `next` dependency): [Next.js](references/nextjs.md).
-- Python (`pyproject.toml`, `setup.cfg`, `setup.py`): [Python](references/python.md).
-- Other or mixed stacks, native targets, or OS-sensitive work: [stack and platform discovery](references/platforms.md).
+- Other TypeScript/JavaScript (`package.json`, `deno.json`, `tsconfig*.json`): [TypeScript and JS](references/typescript-js.md).
+- Python (`pyproject.toml`, `setup.cfg`, `setup.py`, `requirements*.txt`): [Python](references/python.md).
+- Go (`go.mod`, `go.work`): [Go](references/go.md).
+- Rust (`Cargo.toml`, `rust-toolchain.toml`): [Rust](references/rust.md).
+- Java/Kotlin (`build.gradle*`, `pom.xml`, `settings.gradle*`): [JVM and Android](references/jvm.md).
+- Swift/Apple (`Package.swift`, `*.xcodeproj`, `*.xcworkspace`, `Podfile`): [Swift and Apple](references/swift.md).
+- C#/.NET (`*.sln*`, `*.csproj`, `global.json`): [.NET](references/dotnet.md).
+- C/C++ (`CMakeLists.txt`, `CMakePresets.json`, `meson.build`, `Makefile`): [C and C++](references/cpp.md).
+- Ruby, PHP, or Elixir (`Gemfile`, `composer.json`, `mix.exs`): [Ruby, PHP, and Elixir](references/ruby-php-elixir.md).
+- SQL/ORM migrations, OpenAPI, Protobuf, or GraphQL schemas: [Data and Contracts](references/data-and-contracts.md).
+- Polyglot repos, Shell/Docker/CI, unlisted stacks, or OS/target boundaries: [Stack and Platform Discovery](references/platforms.md).
 
-These are starting points, not a supported-language whitelist. Follow the repository's toolchain and target platforms even when no dedicated reference exists.
+These are modular starting points, not a whitelist. Follow the repository's toolchain and target platforms even when no dedicated reference exists.
 
 ## Spend context where it changes decisions
 

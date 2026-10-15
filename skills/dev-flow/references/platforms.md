@@ -1,36 +1,30 @@
-# Stack and platform discovery
+# Polyglot, Shell/CI, and Cross-Platform Discovery
 
-Use for stacks without a dedicated reference or changes crossing runtime/OS boundaries. This is a discovery guide, not a command recipe.
+Use for unlisted languages, polyglot repositories crossing stack boundaries, Shell/Docker/CI changes, or OS-sensitive target verification.
 
 ## Resolve the execution contract
 
-Identify the affected workspace, supported language/runtime versions, package manager or wrapper, build/test scripts, and CI target matrix. Inspect only relevant manifest sections. Lockfiles and toolchain pins take precedence over globally installed tools. A Dockerfile describes a runtime/container target, not necessarily the application's language.
+Identify the affected workspace, runtime/compiler version pins, wrapper scripts, and CI matrix before choosing commands. Lockfiles, version managers (`.nvmrc`, `.node-version`, `.python-version`, `.tool-versions`, `mise.toml`, `rust-toolchain.toml`, `global.json`, `.fvmrc`), and repository wrappers (`./gradlew`, `./mvnw`, `bundle exec`, `uv run`) take precedence over globally installed binaries.
 
-| Evidence | Resolve before choosing checks |
-| --- | --- |
-| `package.json`, workspace config | Framework, package manager pin, scripts, workspace filter, browser versus server runtime; do not assume Next.js |
-| `go.mod`, `go.work` | Go version, module/workspace boundaries, affected package tests; race checks when concurrency changes |
-| `Cargo.toml`, `rust-toolchain.toml` | Rust toolchain, workspace members, features and target triples |
-| `pom.xml`, `build.gradle*`, wrappers | Java/Kotlin version, modules, wrapper tasks; distinguish JVM backend from Android |
-| `*.sln`, `*.csproj`, `global.json` | .NET SDK, target frameworks, affected projects and OS requirements |
-| `Package.swift`, `*.xcodeproj`, `*.xcworkspace` | Swift/Xcode versions, scheme, destination, simulator/device and signing boundaries |
-| `CMakeLists.txt`, presets, `Makefile`, `meson.build` | Compiler, build directory, options, target ABI, existing test runner |
-| `Gemfile`, `*.gemspec`, `composer.json`, `mix.exs` | Runtime pin, dependency tooling, existing test and lint scripts |
-| Other manifests or build files | Follow local docs, scripts, and CI; do not invent universal commands |
+Read build scripts, `Makefile` targets, and task definitions before executing unfamiliar commands: a target named `test`, `check`, or `build` may mutate data, build containers, download toolchains, or publish artifacts. Missing tooling or SDKs are verification constraints, not permission to install or upgrade system packages.
 
-Read build scripts before running unfamiliar tasks: a task named `test` or `build` may publish, mutate data, download tools, or require credentials. Missing tooling is a verification constraint, not permission to install or upgrade it.
+## Shell scripts, containers, and CI workflows
 
-## Trace impact, not every package
+- **Shell (`*.sh`, `zsh`, `bash`):** Preserve target shell compatibility (`#!/usr/bin/env bash` versus POSIX `sh`). Use `set -euo pipefail` where appropriate, quote variable expansions (`"$var"`), guard against empty paths before `rm`/`mv`, prefer temporary staging + atomic `mv`, and test against paths containing spaces. Verify syntax with `bash -n` / `sh -n` and `shellcheck` when available.
+- **Containers (`Dockerfile`, `compose*.yaml`):** Keep base image tags explicit, preserve multi-stage build boundaries and non-root runtime users, never bake secrets or `.env` files into layers, and keep `.dockerignore` aligned with build context needs.
+- **CI/CD (`.github/workflows/`, GitLab CI, etc.):** Preserve pinned action/image versions, minimal token permissions, matrix coverage, and required quality gates; never weaken or skip failing CI steps to force a green pipeline.
 
-For shared libraries, follow changed exports and their consumers. For full-stack work, trace input → validation → service/domain → persistence/provider → response/UI, reading only affected boundaries. Preserve serialization, error mapping, timeouts, retries, cancellation, ownership, and transaction behavior relevant to the change.
+## Trace cross-stack boundaries narrowly
 
-## Verify affected targets
+In monorepos or polyglot systems (e.g., Flutter + Swift/Kotlin/Rust FFI, React/Next.js + Go/Python/.NET API, or microservice meshes), read only the changed producer, the contract boundary (REST/OpenAPI, GraphQL, Protobuf/gRPC, IPC/MethodChannel, FFI header), and direct consumers. Preserve serialization formats, field nullability, error codes, timeouts, retries, cancellation, and idempotency across the boundary.
 
-Select checks from actual supported targets and changed behavior. A platform-neutral unit test cannot prove an OS integration works.
+## Verify affected targets honestly
 
-- Filesystem/process work: relevant path separators, case sensitivity, permissions, line endings, executable discovery, shell quoting, and exit codes.
-- Native/mobile/desktop: relevant lifecycle, threading, resource ownership, permissions, entitlements, architecture, and minimum OS version.
-- Web: relevant browser runtime, accessibility, navigation, hydration, and responsive behavior; use available browser tooling for user journeys that need it.
-- Services/CLI/libraries: entry points, signal/exit behavior, packaging/import/linking, and affected external contracts.
+Select checks from actual supported targets and changed behavior. A platform-neutral unit test cannot prove an OS or device integration works.
 
-Report each required target as verified, failed, or unavailable with the command and reason. Use available local checks when a target requires another host or SDK; do not infer Windows/Linux/device success from a macOS build. Cross-platform software guidance does not make this repository's macOS installer portable to Windows.
+- **Filesystem and processes:** Verify path separators, case sensitivity (macOS APFS is often case-insensitive while Linux is case-sensitive), file permissions, line endings, executable lookup, signal handling, and exit codes.
+- **Native, mobile, and desktop:** Verify lifecycle, main-thread vs. background execution, resource cleanup, permissions, entitlements, CPU architecture (`arm64` vs. `x86_64`), and minimum OS version.
+- **Web and browser:** Verify SSR vs. client runtime APIs, accessibility, navigation, hydration, and responsive behavior.
+- **Services, CLI, and libraries:** Verify entry points, configuration parsing, packaging/linking, and public exports.
+
+Report each required target as **verified**, **failed**, or **unavailable** with the exact command and reason. Use available local checks when a target requires another OS or SDK; never infer Windows, Linux, or physical-device success from a macOS host or simulator check.

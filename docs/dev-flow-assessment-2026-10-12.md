@@ -90,3 +90,18 @@ Chạy bản cũ và mới trên cùng snapshot repo, model, quyền, bộ công
 Global AGENTS.md được rút từ 431 xuống 309 từ (tính cả mục riêng giữ nguyên), làm rõ quyền đã cấp, phạm vi tài nguyên được chỉ định và trạng thái kiểm chứng bị chặn. Bản chung đồng bộ tại `config/AGENTS.md`; mục riêng của máy giữ nguyên từng byte. Sao lưu tại `~/.codex/backups/agents-optimization-20261012-121326/AGENTS.md`.
 
 Installer hiện giữ global AGENTS.md khác template và xuất proposal riêng để review, thay vì ghi đè. Bốn test trong thư mục tạm đã đạt: cài mới/cài lặp, bảo toàn quy tắc riêng và backup skill cũ, từ chối symlink skill, từ chối tham số thiếu. `bash -n install.sh` và `git diff --check` đạt. Không chạy installer thử trên cấu hình thật.
+
+## Mở rộng đa ngôn ngữ chuyên sâu và hỗ trợ Google Antigravity — 15.10.2026
+
+Để tránh việc các dự án ngoài Flutter/Next.js/Python chỉ nhận hướng dẫn tra cứu manifest chung trong `platforms.md`, bộ reference theo cơ chế progressive disclosure đã được mở rộng thành 12 bộ lọc chuyên biệt (mỗi file 30–44 dòng, chỉ nạp đúng file khớp với manifest của workspace đang sửa):
+
+- **Web & JS/TS ngoài Next.js (`references/typescript-js.md`):** React/Vite/Remix, Vue/Nuxt, SvelteKit, Angular, Astro và Node/Bun/Deno backend (NestJS, Fastify, Express, Hono).
+- **Go (`references/go.md`):** `go.mod`/`go.work`, `context.Context`, error wrapping `%w`, phòng rò rỉ goroutine/channel và `go test -race`.
+- **Rust (`references/rust.md`):** `Cargo.toml`, trait/visibility boundaries, `unsafe`/`#[repr(C)]` FFI invariants, tránh chặn async executor, `cargo clippy` và kiểm tra theo feature/target.
+- **Java & Kotlin (`references/jvm.md`):** Gradle/Maven wrapper, phân biệt JVM backend (Spring Boot, Ktor) với Android Native, Kotlin Coroutines structured concurrency (không nuốt `CancellationException`), phòng N+1 query.
+- **Swift & Apple Native (`references/swift.md`):** `Package.swift`/Xcode, bảo vệ signing/entitlements, Swift Concurrency (`@MainActor`, `Sendable`, hủy `Task`), tránh retain cycle.
+- **C# & .NET (`references/dotnet.md`):** DI lifetimes (tránh captive dependency), `CancellationToken` xuyên suốt async, `IHttpClientFactory`, EF Core tracking và migrations.
+- **C & C++ (`references/cpp.md`):** CMake/Meson/Make out-of-source builds, RAII/lifetime (`string_view`/`span`), C ABI/FFI exception safety, và Sanitizers (`ASan`/`UBSan`).
+- **Ruby, PHP & Elixir (`references/ruby-php-elixir.md`):** Rails, Laravel/Symfony, Phoenix/OTP supervision & Ecto changesets.
+- **Database & API Contracts (`references/data-and-contracts.md`):** Quy tắc bất biến cho SQL/ORM migrations (expand-and-contract, append-only) và tương thích ngược cho OpenAPI, Protobuf, GraphQL.
+- **Installer (`install.sh` & `tests/test_install.py`):** Bổ sung cờ `--antigravity` (`--target antigravity`) cài đặt an toàn vào `~/.gemini/config/GEMINI.md` và `~/.gemini/config/skills/dev-flow`, kèm 6 unit tests kiểm tra cả bảo toàn cấu hình lẫn tính toàn vẹn liên kết giữa `SKILL.md` và `references/*.md`.
