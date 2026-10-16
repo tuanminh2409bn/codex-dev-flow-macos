@@ -30,5 +30,5 @@ Use wrapper tasks from the repository. Run only applicable stages:
 2. Focused unit test (`./gradlew :module:test --tests <Class.method>` or `./mvnw test -Dtest=<Class#method>`).
 3. Affected module compilation and unit test suite.
 4. Slice or integration tests (`@WebMvcTest`, `@DataJpaTest`, Testcontainers) when HTTP, serialization, or database behavior changed.
-5. Package or Android target check (`assembleDebug`, `jar`, native plugin build) when manifests, Gradle config, or DI wiring changed; for Android/desktop UI changes, launch and drive the app visibly on the macOS screen (Android Emulator or desktop window, never headless/hidden).
+5. Package or Android target check (`assembleDebug`, `jar`, native plugin build) when manifests, Gradle config, or DI wiring changed; for Android/desktop UI changes, run interactive end-to-end verification in a headless/background Android Emulator or test runner without opening visible foreground windows.
 6. Downstream consumer module tests when shared contracts change.

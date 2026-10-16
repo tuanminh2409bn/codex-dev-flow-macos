@@ -29,5 +29,5 @@ Select the smallest applicable check for the active scheme or package:
 1. `swift-format` or `swiftlint` on changed `.swift` files when configured.
 2. Focused test (`swift test --filter <Target.Test>` or `xcodebuild test -scheme <Scheme> -destination <Destination> -only-testing:<Target/TestClass/testMethod>`).
 3. Target or package build (`swift build` or `xcodebuild build -scheme <Scheme> -destination <Destination>`) with compiler concurrency/deprecation diagnostics respected.
-4. Visible interactive iOS Simulator or macOS app verification on the macOS screen (never headless/hidden) when UI, layout, lifecycle, navigation, permissions, or native plugin channels change: bring the Simulator or app window to the foreground, drive the real user flow, and verify layout and runtime logs.
+4. Headless or background interactive iOS Simulator or macOS app verification (without bringing Simulator/app windows to the foreground) when UI, layout, lifecycle, navigation, permissions, or native plugin channels change: drive the real user flow and verify layout and runtime logs.
 5. Verify bridging headers, entitlements, and resource bundle membership when target configuration changes.

@@ -34,7 +34,7 @@ Derive exact commands from `package.json`. Run only applicable stages:
 2. Focused unit or component test covering changed behavior.
 3. Typecheck for the affected workspace.
 4. Relevant integration or route tests.
-5. Visible Interactive Browser/E2E verification on the macOS screen (Chrome CDP without `--headless`, Playwright `headless: false`, or DevTools — never headless/hidden) for any UI, routing, hydration, or user-journey change: exercise real interactions (login, forms, clicks, state/tenant/locale/theme switches, error banners) visibly on both Desktop (`1280px+`) and Mobile (`320px`–`390px`) viewports; verify live DOM integrity, `scrollWidth <= innerWidth`, zero `console.error`/`pageerror`, and inspect fresh screenshots.
+5. Headless Interactive Browser/E2E verification (Chrome CDP `--headless`, Playwright `headless: true`, or DevTools in background mode without opening a visible window) for any UI, routing, hydration, or user-journey change: exercise real interactions (login, forms, clicks, state/tenant/locale/theme switches, error banners) on both Desktop (`1280px+`) and Mobile (`320px`–`390px`) viewports; verify live DOM integrity, `scrollWidth <= innerWidth`, zero `console.error`/`pageerror`, and inspect fresh screenshots.
 6. Production build for routing, server/client boundaries, configuration, middleware, bundling, or runtime changes.
 
 Expand to the monorepo-wide suite only when a shared package or contract can affect multiple consumers. Do not update snapshots blindly; inspect behavioral changes first. Always clean up disposable databases, test accounts, and background server processes after verification.
