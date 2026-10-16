@@ -38,7 +38,7 @@ Use existing scripts when available. Otherwise select the smallest applicable pr
 2. `flutter analyze` for the affected package; do not hide analyzer findings.
 3. A focused unit, widget, or golden test covering the changed behavior.
 4. The affected package's test suite for shared logic or cross-feature changes.
-5. An integration or runtime smoke test for navigation, plugins, platform channels, persistence, networking, or lifecycle behavior.
+5. Visible interactive Simulator/Emulator/Desktop/Browser runtime verification on the macOS screen (never headless or hidden in the background) for UI flows, navigation, plugins, platform channels, persistence, networking, or lifecycle behavior: launch a visible window so the user can watch on screen, drive real user gestures/inputs, verify layout bounds without overflow across target screen sizes, and inspect live logs/screenshots.
 6. Build only affected targets: web, Android, iOS, macOS, Windows, or Linux. Do not build every platform by default.
 
-For Flutter Web runtime or visual behavior, use browser testing only when static checks and widget tests cannot prove the outcome.
+Never rely solely on static analysis, widget unit tests, or headless runs for user-facing UI/runtime behavior; always display the running app visibly on macOS during verification, then clean up temporary processes and test state.

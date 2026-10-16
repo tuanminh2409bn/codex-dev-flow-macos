@@ -31,5 +31,5 @@ Derive exact commands from `package.json` or `deno.json`. Run only applicable st
 2. Focused unit or component test (`vitest`, `jest`, `node --test`, `bun test`, `deno test`) covering changed behavior.
 3. Typecheck (`tsc --noEmit`, `vue-tsc`, `svelte-check`, `ng build`, `deno check`) for the affected workspace.
 4. Relevant API, service, or integration tests.
-5. Browser/E2E test (`playwright`, `cypress`) when user journeys, routing, hydration, or DOM behavior changed.
-6. Build or bundle check when exports, bundler config, SSR boundaries, or packaging changed.
+5. Visible Interactive Browser/E2E verification on the macOS screen (Chrome CDP without `--headless`, Playwright/Cypress in headed mode, or visible Electron/Tauri window — never headless/hidden) whenever UI, user journeys, routing, hydration, or DOM behavior is affected: drive real clicks/forms/state transitions visibly across Desktop (`1280px+`) and Mobile (`320px`–`390px`) viewports, verify live DOM integrity, `scrollWidth <= innerWidth`, zero `console.error`/`pageerror`, and inspect fresh screenshots.
+6. Build or bundle check when exports, bundler config, SSR boundaries, or packaging changed, followed by clean teardown of disposable data and background processes.
